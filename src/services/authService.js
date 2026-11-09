@@ -1,22 +1,26 @@
 import { users } from "../database/users.js";
 import { jwtToken } from "../utils/jwt.js";
 import { bcryptCompare } from "../utils/hash.js";
+import { AppError } from "../utils/AppError.js";
 
+// Mesma mensagem para e-mail e senha errados, para não revelar quais e-mails existem
+const INVALID_CREDENTIALS = "E-mail ou senha inválidos";
 
 export async function authService(email, password) {
-    const user = users.find((u) => u.email.toLocaleLowerCase() === email.toLocaleLowerCase().trim())
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = users.find((u) => u.email.toLowerCase() === normalizedEmail);
 
     if (!user) {
-        throw new Error("Usuário não encontrado")
+        throw new AppError(INVALID_CREDENTIALS, 401);
     }
 
-    const passwordMatch = await bcryptCompare(password, user.password)
+    const passwordMatch = await bcryptCompare(password, user.password);
 
     if (!passwordMatch) {
-       throw new Error("Senha inválida")
+        throw new AppError(INVALID_CREDENTIALS, 401);
     }
 
-    const token = jwtToken(user)
+    const token = jwtToken(user);
 
     return {
         token,
@@ -25,5 +29,5 @@ export async function authService(email, password) {
             email: user.email,
             role: user.role
         }
-    }
+    };
 }
