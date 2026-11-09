@@ -36,7 +36,3 @@ coverage/
 # Cache
 .cache/
 .npm/
-
-# Arquivos de teste
-*.test.js
-*.spec.js

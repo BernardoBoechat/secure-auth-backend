@@ -1,5 +1,7 @@
+import { verifyToken } from "../utils/jwt.js";
+
 export function authMiddleware(req, res, next) {
-    const token = req.cookies.token
+    const token = req.cookies.token;
 
     if (!token) {
         return res.status(401).json({
@@ -8,21 +10,11 @@ export function authMiddleware(req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
-
-        req.user = decoded;
-
+        req.user = verifyToken(token);
         next();
-
-
-    } catch (error) {
+    } catch {
         return res.status(401).json({
-            message: "Token inválido"
+            message: "Token inválido ou expirado"
         });
-
     }
-
 }

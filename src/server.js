@@ -1,9 +1,8 @@
+// Carrega o .env antes de qualquer outro módulo ler process.env
+import "dotenv/config";
 import app from "./app.js";
-import dotenv from "dotenv";
 
-const port = 3000
-
-dotenv.config()
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`
@@ -12,5 +11,5 @@ app.listen(port, () => {
 📡 Porta: ${port}
 🌐 URL: http://localhost:${port}
 ⚙️ Ambiente: ${process.env.NODE_ENV || "development"}
-    `)
-})
+    `);
+});

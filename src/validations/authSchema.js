@@ -1,24 +1,19 @@
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validateLogin(req, res, next) {
+    const { email, password } = req.body ?? {};
 
-    const { email, password } = req.body;
-
-
-    if (!email || !password) {
+    if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
         return res.status(400).json({
-            message: "Email e senha são obrigatórios"
+            message: "E-mail e senha são obrigatórios"
         });
     }
 
-
-    if (!email.includes("@")) {
+    if (!EMAIL_REGEX.test(email.trim())) {
         return res.status(400).json({
-            message: "Email inválido"
+            message: "E-mail inválido"
         });
     }
-
-
 
     next();
-
 }
